@@ -1,7 +1,7 @@
 import cv2
 
-face_cascade = cv2.CascadeClassifier('cars.xml')
-cap = cv2.VideoCapture('video1.avi')
+car_cascade = cv2.CascadeClassifier('russianplate.xml')
+cap = cv2.VideoCapture('plates.mp4')
 
 while True:
 
@@ -9,9 +9,11 @@ while True:
 
     if ret:
 
-        cars = face_cascade.detectMultiScale(frame, 1.1, 2)
+        cars = car_cascade.detectMultiScale(frame, 1.1, 2)
         for (x, y, w, h) in cars:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+            sub_img = frame[y:y + h, x:x + w]
+            sub_img = cv2.GaussianBlur(sub_img, (23, 23), 30)
+            frame[y:y + sub_img.shape[0], x:x + sub_img.shape[1]] = sub_img
 
         cv2.imshow("Result", frame)
 
@@ -23,3 +25,4 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
